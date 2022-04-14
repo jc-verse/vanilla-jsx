@@ -1,8 +1,9 @@
 {
   "name": "@joshcena/vanilla-jsx",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "description": "Writing JSX in vanilla JavaScript-no transforms.",
   "main": "jsx.js",
+  "unpkg": "jsx.js",
   "publishConfig": {
     "access": "public"
   },

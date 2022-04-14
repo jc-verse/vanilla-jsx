@@ -1,22 +1,150 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <title></title>
+  <title>Vanilla JSX playground</title>
   <meta charset="utf-8">
+  <style>
+    body {
+      display: flex;
+    }
+    #__left {
+      display: flex;
+      flex-direction: column;
+      margin: 2rem;
+      width: 50%;
+    }
+    #__playgroundInput {
+      width: 100%;
+      height: 50%;
+      padding: 0.5rem;
+    }
+    #__htmlOutput {
+      width: 100%;
+      height: 50%;
+      border: 1px solid black;
+      padding: 0.5rem;
+    }
+    #__preview {
+      margin: 2rem;
+      width: 50%;
+    }
+  </style>
 </head>
 <body>
-  <div id="root"></div>
+  <div id="__left">
+    <textarea id="__playgroundInput" cols="100" rows="40">
+[div, className="form", aria_label="Tell me your age"]
+  [label, htmlFor="age"]`Age: `[$label]
+  [input, id="age", type="range", max=10, value=4, $]
+[$div]
+</textarea>
+    <pre id="__htmlOutput">Loading...</pre>
+  </div>
+  <div id="__preview">
+    <div style="display:flex;justify-content:center;align-items:center">
+      <svg
+        id="loader"
+        width="128"
+        height="110"
+        style="position:absolute;top:calc(100vh - 64%)"
+        viewBox="0 0 45 45"
+        xmlns="http://www.w3.org/2000/svg"
+        stroke="#61dafb">
+        <g
+          fill="none"
+          fillRule="evenodd"
+          transform="translate(1 1)"
+          strokeWidth="2">
+          <circle cx="22" cy="22" r="6" strokeOpacity="0">
+            <animate
+              attributeName="r"
+              begin="1.5s"
+              dur="3s"
+              values="6;22"
+              calcMode="linear"
+              repeatCount="indefinite"
+            />
+            <animate
+              attributeName="stroke-opacity"
+              begin="1.5s"
+              dur="3s"
+              values="1;0"
+              calcMode="linear"
+              repeatCount="indefinite"
+            />
+            <animate
+              attributeName="stroke-width"
+              begin="1.5s"
+              dur="3s"
+              values="2;0"
+              calcMode="linear"
+              repeatCount="indefinite"
+            />
+          </circle>
+          <circle cx="22" cy="22" r="6" strokeOpacity="0">
+            <animate
+              attributeName="r"
+              begin="3s"
+              dur="3s"
+              values="6;22"
+              calcMode="linear"
+              repeatCount="indefinite"
+            />
+            <animate
+              attributeName="stroke-opacity"
+              begin="3s"
+              dur="3s"
+              values="1;0"
+              calcMode="linear"
+              repeatCount="indefinite"
+            />
+            <animate
+              attributeName="stroke-width"
+              begin="3s"
+              dur="3s"
+              values="2;0"
+              calcMode="linear"
+              repeatCount="indefinite"
+            />
+          </circle>
+          <circle cx="22" cy="22" r="8">
+            <animate
+              attributeName="r"
+              begin="0s"
+              dur="1.5s"
+              values="6;1;2;3;4;5;6"
+              calcMode="linear"
+              repeatCount="indefinite"
+            />
+          </circle>
+        </g>
+      </svg>
+    </div>
+  </div>
   <script src="./jsx.js"></script>
+  <script src="https://unpkg.com/prettier@2.6.2/standalone.js"></script>
+  <script src="https://unpkg.com/prettier@2.6.2/parser-html.js"></script>
   <script>
-    with (universalNS) {
-      const element = jsx
-        [div, className="form"]
-          [label, htmlFor="age"]`Age: `[$label]
-          [input, id="age", type="range", max=10, value=4, $]
-        [$div];
-      const root = document.getElementById("root");
-      element.toDOM().forEach((elem) => root.appendChild(elem));
+    function update() {
+      try {
+        with (universalNS) {
+          const element = eval("jsx" + __playgroundInput.value);
+          __preview.innerHTML = "";
+          element.toDOM().forEach((elem) => __preview.appendChild(elem));
+        }
+        __htmlOutput.innerText = prettier.format(__preview.innerHTML, {
+          parser: "html",
+          plugins: prettierPlugins,
+          htmlWhitespaceSensitivity: "ignore",
+        });
+      } catch (e) {
+        __htmlOutput.innerText = e.stack;
+      } finally {
+        resetJSX();
+      }
     }
+    __playgroundInput.addEventListener("input", update);
+    update();
   </script>
 </body>
 </html>

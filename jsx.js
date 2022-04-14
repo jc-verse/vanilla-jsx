@@ -5,7 +5,7 @@ function formatAttr(attr) {
   if (attr[1] === false) return [];
   const [k, v] = attr;
   const keyMap = { htmlFor: "for", className: "class" };
-  return [k in keyMap ? keyMap[k] : k, v];
+  return [k in keyMap ? keyMap[k] : k.replace(/_/, "-"), v];
 }
 
 function formatTag(rawAttrs) {
@@ -13,7 +13,7 @@ function formatTag(rawAttrs) {
   if (tagName.startsWith("$")) {
     if (attrs.length > 0)
       throw new Error("JSX closing tag cannot have attributes");
-    return { type: "closing", tagName: tagName.replace(/^\$/, "") };
+    return { type: "closing", tagName: tagName.replace(/^\$/, "").replace(/_/, "-") };
   } else if (attrs.at(-1) === "$") {
     attrs.pop();
     return { type: "self-close", tagName, attrs: attrs.map(formatAttr) };
@@ -41,7 +41,7 @@ function createJSX(stack) {
   jsx.stack = () => stack;
   jsx.toDOM = () => {
     if (stack.length)
-      throw new Error(`Unclosed tags: ${stack.map(({tagName}) => tagName).join(", ")}`);
+      throw new Error(`Unclosed tags: ${stack.map(({tagName}) => tagName.toLowerCase()).join(", ")}`);
     return jsxState.domRoots;
   }
   return new Proxy(jsx, jsxTrap);
@@ -89,3 +89,8 @@ globalThis.universalNS = new Proxy({}, {
 });
 
 globalThis.jsx = createJSX([]);
+globalThis.resetJSX = () => {
+  globalThis.jsx = createJSX([]);
+  jsxState.attrs = [];
+  jsxState.domRoots = [];
+}
