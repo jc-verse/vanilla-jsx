@@ -78,12 +78,19 @@ globalThis.universalNS = new Proxy({}, {
   get(target, prop) {
     if (typeof prop === "symbol") return target[prop];
     jsxState.attrs.push(prop);
-    return prop;
+    return [prop];
   },
   set(target, prop, value) {
     if (typeof prop === "symbol") target[prop] = value;
     else if (prop in globalThis) globalThis[prop] = value;
-    else jsxState.attrs.push([prop, value]);
+    else {
+      if (Array.isArray(value)) {
+        jsxState.attrs.pop();
+        jsxState.attrs.push([prop, value[0]]);
+      } else {
+        jsxState.attrs.push([prop, value]);
+      }
+    }
     return true;
   }
 });
