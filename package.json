@@ -1,0 +1,7 @@
+{
+  "name": "vanilla-jsx",
+  "version": "0.0.0",
+  "description": "Writing JSX in vanilla JavaScript-no transforms.",
+  "main": "jsx.js",
+  "license": "MIT"
+}
