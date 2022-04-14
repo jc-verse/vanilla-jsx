@@ -1,7 +1,10 @@
 {
-  "name": "vanilla-jsx",
-  "version": "0.0.0",
+  "name": "@joshcena/vanilla-jsx",
+  "version": "0.0.1",
   "description": "Writing JSX in vanilla JavaScript-no transforms.",
   "main": "jsx.js",
+  "publishConfig": {
+    "access": "public"
+  },
   "license": "MIT"
 }
