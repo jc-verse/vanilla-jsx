@@ -1,8 +1,9 @@
 const jsxState = { attrs: [], domRoots: [] };
 
 function formatAttr(attr) {
-  if (!Array.isArray(attr)) return [attr, true];
+  if (!Array.isArray(attr)) return [attr.replace(/^\$/, "").replace(/_/, "-"), true];
   if (attr[1] === false) return [];
+  attr[0] = attr[0].replace(/^\$/, "");
   const [k, v] = attr;
   const keyMap = { htmlFor: "for", className: "class" };
   return [k in keyMap ? keyMap[k] : k.replace(/_/, "-"), v];
