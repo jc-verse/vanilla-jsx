@@ -3,23 +3,24 @@ const jsxState = { attrs: [], domRoots: [] };
 function formatAttr(attr) {
   if (!Array.isArray(attr)) return [attr.replace(/^\$/, "").replace(/_/, "-"), true];
   if (attr[1] === false) return [];
-  attr[0] = attr[0].replace(/^\$/, "");
   const [k, v] = attr;
   const keyMap = { htmlFor: "for", className: "class" };
-  return [k in keyMap ? keyMap[k] : k.replace(/_/, "-"), v];
+  const normalizedKey = k in keyMap ? keyMap[k] : k.replace(/_/, "-")
+  return [normalizedKey, v];
 }
 
 function formatTag(rawAttrs) {
   const [tagName, ...attrs] = rawAttrs;
+  const normalizedTagName = tagName.replace(/_/, "-");
   if (tagName.startsWith("$")) {
     if (attrs.length > 0)
       throw new Error("JSX closing tag cannot have attributes");
-    return { type: "closing", tagName: tagName.replace(/^\$/, "").replace(/_/, "-") };
+    return { type: "closing", tagName: normalizedTagName };
   } else if (attrs.at(-1) === "$") {
     attrs.pop();
-    return { type: "self-close", tagName, attrs: attrs.map(formatAttr) };
+    return { type: "self-close", tagName: normalizedTagName, attrs: attrs.map(formatAttr) };
   } else {
-    return { type: "opening", tagName, attrs: attrs.map(formatAttr) };
+    return { type: "opening", tagName: normalizedTagName, attrs: attrs.map(formatAttr) };
   }
 }
 
