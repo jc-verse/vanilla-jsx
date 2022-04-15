@@ -12,10 +12,10 @@ function formatAttr(attr) {
 function formatTag(rawAttrs) {
   const [tagName, ...attrs] = rawAttrs;
   const normalizedTagName = tagName.replace(/_/, "-");
-  if (tagName.startsWith("$")) {
+  if (normalizedTagName.startsWith("$")) {
     if (attrs.length > 0)
       throw new Error("JSX closing tag cannot have attributes");
-    return { type: "closing", tagName: normalizedTagName };
+    return { type: "closing", tagName: normalizedTagName.replace(/^\$/, "") };
   } else if (attrs.at(-1) === "$") {
     attrs.pop();
     return { type: "self-close", tagName: normalizedTagName, attrs: attrs.map(formatAttr) };
